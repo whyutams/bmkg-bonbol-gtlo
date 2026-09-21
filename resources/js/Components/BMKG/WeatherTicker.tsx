@@ -34,7 +34,7 @@ export default function WeatherTicker() {
                     if (cur) {
                         const tempVal = Number(cur.t) || 30;
                         const condDesc = cur.weather_desc || 'Cerah Berawan';
-                        
+
                         setTickerData(prev => prev.map(item => ({
                             ...item,
                             temp: tempVal,
@@ -49,14 +49,17 @@ export default function WeatherTicker() {
     return (
         <div className="w-full bg-[#0f172a] text-white border-b border-slate-800 flex items-center overflow-hidden h-9 select-none">
             <div className="flex-shrink-0 bg-slate-900 px-3.5 py-2 text-[10px] sm:text-[11px] font-bold tracking-wider uppercase flex items-center gap-1.5 border-r border-slate-700/60 z-10">
-                <span className="text-slate-200">Prakiraan Cuaca Bone Bolango & Gorontalo</span>
+                <span className="text-slate-200">
+                    Prakiraan Cuaca
+                    <span className="hidden sm:inline"> Bone Bolango & Gorontalo</span>
+                </span>
             </div>
 
             <div className="flex-1 overflow-hidden relative">
                 <div className="animate-ticker">
                     {[...tickerData, ...tickerData].map((item, idx) => (
-                        <div 
-                            key={idx} 
+                        <div
+                            key={idx}
                             className="inline-flex items-center gap-2 px-4 py-1 text-xs border-r border-slate-800 whitespace-nowrap"
                         >
                             <span className="font-medium text-slate-200">{item.name}</span>
