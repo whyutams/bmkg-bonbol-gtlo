@@ -78,9 +78,6 @@ export default function Login({
                             </div>
 
                             <div>
-                                <span className="inline-block px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-bmkg-primary text-[10px] font-extrabold uppercase tracking-wider mb-1">
-                                    Portal Administrasi UPT
-                                </span>
                                 <h1 className="text-lg sm:text-xl font-black text-bmkg-navy tracking-tight">
                                     Staklim Bone Bolango
                                 </h1>
@@ -127,7 +124,7 @@ export default function Login({
                             <div>
                                 <div className="flex items-center justify-between mb-1">
                                     <label className="block text-xs font-bold text-slate-700">
-                                        Password Akun
+                                        Password
                                     </label>
                                 </div>
                                 <div className="relative">
@@ -168,7 +165,7 @@ export default function Login({
                                         onChange={(e) => setData('remember', e.target.checked)}
                                         className="w-4 h-4 text-bmkg-primary border-slate-300 rounded focus:ring-bmkg-primary"
                                     />
-                                    <span className="text-xs text-slate-600 font-medium">Ingat saya pada perangkat ini</span>
+                                    <span className="text-xs text-slate-600 font-medium">Ingat saya</span>
                                 </label>
                             </div>
 
