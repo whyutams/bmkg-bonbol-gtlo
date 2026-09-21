@@ -23,6 +23,29 @@ const DEFAULT_TICKER_DATA: TickerItem[] = [
 ];
 
 export default function WeatherTicker() {
+    const [tickerData, setTickerData] = React.useState<TickerItem[]>(DEFAULT_TICKER_DATA);
+
+    React.useEffect(() => {
+        fetch('/api/bmkg/cuaca')
+            .then(res => res.json())
+            .then(json => {
+                if (json?.data?.[0]?.cuaca?.[0]?.length) {
+                    const cur = json.data[0].cuaca[0][0];
+                    if (cur) {
+                        const tempVal = Number(cur.t) || 30;
+                        const condDesc = cur.weather_desc || 'Cerah Berawan';
+                        
+                        setTickerData(prev => prev.map(item => ({
+                            ...item,
+                            temp: tempVal,
+                            condition: condDesc,
+                        })));
+                    }
+                }
+            })
+            .catch(() => console.log('Weather ticker fallback'));
+    }, []);
+
     return (
         <div className="w-full bg-[#0f172a] text-white border-b border-slate-800 flex items-center overflow-hidden h-9 select-none">
             <div className="flex-shrink-0 bg-slate-900 px-3.5 py-2 text-[10px] sm:text-[11px] font-bold tracking-wider uppercase flex items-center gap-1.5 border-r border-slate-700/60 z-10">
@@ -31,8 +54,7 @@ export default function WeatherTicker() {
 
             <div className="flex-1 overflow-hidden relative">
                 <div className="animate-ticker">
-                    
-                    {[...DEFAULT_TICKER_DATA, ...DEFAULT_TICKER_DATA].map((item, idx) => (
+                    {[...tickerData, ...tickerData].map((item, idx) => (
                         <div 
                             key={idx} 
                             className="inline-flex items-center gap-2 px-4 py-1 text-xs border-r border-slate-800 whitespace-nowrap"

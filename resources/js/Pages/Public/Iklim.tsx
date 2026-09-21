@@ -26,7 +26,6 @@ import {
     Legend
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { ClimateHTHItem, ClimateBulletin } from '@/types/bmkg';
 
 ChartJS.register(
     CategoryScale,
@@ -39,19 +38,36 @@ ChartJS.register(
     Legend
 );
 
-const HTH_DATA: ClimateHTHItem[] = [
-    { wilayah: 'Suwawa (Bone Bolango)', hari: 3, kategori: '1-5 hari', keterangan: 'Kondisi Aman / Tidak Terindikasi Kekeringan' },
-    { wilayah: 'Kabila (Bone Bolango)', hari: 4, kategori: '1-5 hari', keterangan: 'Kondisi Aman / Hujan Ringan Terakhir 4 Hari Lalu' },
-    { wilayah: 'Tilongkabila (Bone Bolango)', hari: 2, kategori: '1-5 hari', keterangan: 'Kondisi Aman / Terjadi Hujan Lokal' },
-    { wilayah: 'Bonepantai (Bone Bolango)', hari: 6, kategori: '6-10 hari', keterangan: 'Kategori Pendek / Pemantauan Normal' },
-    { wilayah: 'Bulango Ulu (Bone Bolango)', hari: 1, kategori: '1-5 hari', keterangan: 'Kondisi Sangat Basah / Ada Hujan' },
-    { wilayah: 'Pinogu (Bone Bolango)', hari: 0, kategori: 'Ada Hujan', keterangan: 'Hujan Mengguyur Hari Ini (19 mm)' },
-    { wilayah: 'Kota Gorontalo', hari: 4, kategori: '1-5 hari', keterangan: 'Kondisi Aman' },
-    { wilayah: 'Limboto (Kab. Gorontalo)', hari: 5, kategori: '1-5 hari', keterangan: 'Kondisi Aman' },
-    { wilayah: 'Tilamuta (Boalemo)', hari: 12, kategori: '11-20 hari', keterangan: 'Kategori Menengah / Waspada Pengairan Sawah' },
-    { wilayah: 'Marisa (Pohuwato)', hari: 8, kategori: '6-10 hari', keterangan: 'Kategori Pendek' },
-    { wilayah: 'Kwandang (Gorontalo Utara)', hari: 3, kategori: '1-5 hari', keterangan: 'Kondisi Aman' }
-];
+export interface DbHthItem {
+    id: number;
+    region_name: string;
+    district_name: string;
+    dasarian: string;
+    month: string;
+    year: number;
+    days_without_rain: number;
+    risk_category: string;
+    status_label: string;
+    observation_date: string;
+}
+
+export interface DbBulletinItem {
+    id: number;
+    title: string;
+    edition?: string;
+    category: 'buletin' | 'peta' | 'laporan' | string;
+    file_size?: string;
+    file_type?: string;
+    file_path?: string;
+    download_url?: string;
+    published_date?: string;
+    summary?: string;
+}
+
+interface IklimProps {
+    dbHth?: DbHthItem[];
+    dbBulletins?: DbBulletinItem[];
+}
 
 const MONTHLY_RAINFALL = {
     'Bone Bolango': {
@@ -80,52 +96,9 @@ const MONTHLY_RAINFALL = {
     }
 };
 
-const BULLETINS: ClimateBulletin[] = [
-    {
-        id: '1',
-        title: 'Buletin Informasi Iklim Provinsi Gorontalo - Edisi September 2026',
-        edition: 'September 2026',
-        fileSize: '3.4 MB',
-        fileType: 'PDF',
-        category: 'buletin',
-        downloadUrl: '#',
-        publishedDate: '15 Sep 2026'
-    },
-    {
-        id: '2',
-        title: 'Peta Prakiraan Awal Musim Hujan 2026/2027 Wilayah Gorontalo',
-        edition: 'Prakiraan 2026/2027',
-        fileSize: '4.8 MB',
-        fileType: 'PNG',
-        category: 'peta',
-        downloadUrl: '#',
-        publishedDate: '01 Sep 2026'
-    },
-    {
-        id: '3',
-        title: 'Data Curah Hujan Bulanan Stasiun Pos Hujan Bone Bolango Tahun 2025',
-        edition: 'Tahun 2025',
-        fileSize: '1.2 MB',
-        fileType: 'XLSX',
-        category: 'laporan',
-        downloadUrl: '#',
-        publishedDate: '10 Jan 2026'
-    },
-    {
-        id: '4',
-        title: 'Buletin Informasi Iklim Provinsi Gorontalo - Edisi Agustus 2026',
-        edition: 'Agustus 2026',
-        fileSize: '3.1 MB',
-        fileType: 'PDF',
-        category: 'buletin',
-        downloadUrl: '#',
-        publishedDate: '15 Agu 2026'
-    }
-];
-
 const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
 
-export default function Iklim() {
+export default function Iklim({ dbHth = [], dbBulletins = [] }: IklimProps) {
     const [selectedRegion, setSelectedRegion] = useState<keyof typeof MONTHLY_RAINFALL>('Bone Bolango');
     const [bulletinFilter, setBulletinFilter] = useState<'all' | 'buletin' | 'peta' | 'laporan'>('all');
 
@@ -208,8 +181,12 @@ export default function Iklim() {
     };
 
     const filteredBulletins = bulletinFilter === 'all' 
-        ? BULLETINS 
-        : BULLETINS.filter(b => b.category === bulletinFilter);
+        ? dbBulletins 
+        : dbBulletins.filter(b => b.category === bulletinFilter);
+
+    const latestDasarianInfo = dbHth.length > 0 
+        ? `Dasarian ${dbHth[0].dasarian} ${dbHth[0].month} ${dbHth[0].year}`
+        : 'Dasarian Aktif';
 
     return (
         <MainLayout title="Informasi Iklim, Monitoring HTH, dan Curah Hujan">
@@ -229,7 +206,7 @@ export default function Iklim() {
                     </p>
                 </div>
 
-                
+                {/* Section HTH Dasarian */}
                 <section id="hth" className="bg-white rounded-xl border border-bmkg-border p-5 sm:p-6 shadow-sm space-y-4">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 pb-3">
                         <div>
@@ -240,15 +217,14 @@ export default function Iklim() {
                                 </h2>
                             </div>
                             <p className="text-xs text-gray-500 mt-0.5">
-                                Pemantauan deret hari kering untuk deteksi dini risiko kekeringan meteorologis dan hidrologis.
+                                Pemantauan deret hari kering dari pos pengamatan untuk deteksi dini risiko kekeringan meteorologis.
                             </p>
                         </div>
-                        <span className="text-xs text-gray-500 font-mono">
-                            Pembaruan: Dasarian II September 2026
+                        <span className="text-xs text-slate-600 font-bold bg-slate-100 px-3 py-1 rounded-lg border border-slate-200">
+                            Pembaruan: {latestDasarianInfo}
                         </span>
                     </div>
 
-                    
                     <div className="flex flex-wrap items-center gap-2 pt-1 pb-2">
                         <span className="text-xs font-semibold text-gray-500 mr-1">Skala Klasifikasi BMKG:</span>
                         <span className="px-2.5 py-1 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">
@@ -265,37 +241,51 @@ export default function Iklim() {
                         </span>
                     </div>
 
-                    
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                        {HTH_DATA.map((item, idx) => {
-                            let badgeStyle = 'bg-emerald-50 text-emerald-800 border-emerald-200';
-                            if (item.kategori === '6-10 hari') badgeStyle = 'bg-amber-50 text-amber-800 border-amber-200';
-                            if (item.kategori === '11-20 hari') badgeStyle = 'bg-orange-50 text-orange-800 border-orange-200';
-                            if (item.kategori === '>30 hari' || item.kategori === '21-30 hari') badgeStyle = 'bg-red-50 text-red-800 border-red-200';
+                    {dbHth.length > 0 ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            {dbHth.map((item) => {
+                                let badgeStyle = 'bg-emerald-50 text-emerald-800 border-emerald-200';
+                                if (item.days_without_rain >= 6 && item.days_without_rain <= 10) {
+                                    badgeStyle = 'bg-amber-50 text-amber-800 border-amber-200';
+                                } else if (item.days_without_rain >= 11 && item.days_without_rain <= 20) {
+                                    badgeStyle = 'bg-orange-50 text-orange-800 border-orange-200';
+                                } else if (item.days_without_rain > 20) {
+                                    badgeStyle = 'bg-red-50 text-red-800 border-red-200';
+                                }
 
-                            return (
-                                <div 
-                                    key={idx}
-                                    className="p-3.5 rounded-xl border border-bmkg-border/80 bg-bmkg-surface flex flex-col justify-between"
-                                >
-                                    <div className="flex items-start justify-between gap-2 mb-2">
-                                        <h4 className="text-xs font-bold text-bmkg-navy">
-                                            {item.wilayah}
-                                        </h4>
-                                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${badgeStyle}`}>
-                                            {item.hari} Hari HTH
-                                        </span>
+                                return (
+                                    <div 
+                                        key={item.id}
+                                        className="p-3.5 rounded-xl border border-bmkg-border/80 bg-bmkg-surface flex flex-col justify-between hover:border-bmkg-primary transition-all"
+                                    >
+                                        <div className="flex items-start justify-between gap-2 mb-2">
+                                            <div>
+                                                <span className="text-[10px] font-bold text-slate-400 block uppercase">
+                                                    {item.region_name}
+                                                </span>
+                                                <h4 className="text-xs font-bold text-bmkg-navy">
+                                                    {item.district_name}
+                                                </h4>
+                                            </div>
+                                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold border flex-shrink-0 ${badgeStyle}`}>
+                                                {item.days_without_rain} Hari HTH
+                                            </span>
+                                        </div>
+                                        <p className="text-[11px] text-gray-600 font-medium">
+                                            {item.status_label || `Kategori ${item.risk_category}`}
+                                        </p>
                                     </div>
-                                    <p className="text-[11px] text-gray-600">
-                                        {item.keterangan}
-                                    </p>
-                                </div>
-                            );
-                        })}
-                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <div className="p-8 text-center bg-slate-50 rounded-xl border border-slate-200 text-slate-500 text-xs">
+                            Belum ada data monitoring HTH yang diinput untuk periode ini.
+                        </div>
+                    )}
                 </section>
 
-                
+                {/* Section Analisis Curah Hujan Bulanan */}
                 <section id="analisis" className="bg-white rounded-xl border border-bmkg-border p-5 sm:p-6 shadow-sm space-y-4">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-3">
                         <div>
@@ -323,7 +313,7 @@ export default function Iklim() {
 
                             <button
                                 onClick={handleExportCSV}
-                                className="px-3 py-1.5 rounded-lg bg-[#0f172a] hover:bg-slate-800 text-white text-xs font-bold flex items-center gap-1.5 transition-colors shadow-2xs"
+                                className="px-3 py-1.5 rounded-lg bg-[#0f172a] hover:bg-slate-800 text-white text-xs font-bold flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
                             >
                                 <Download className="w-3.5 h-3.5" />
                                 <span>Unduh CSV</span>
@@ -338,12 +328,12 @@ export default function Iklim() {
                     <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs text-gray-700 flex items-start gap-2">
                         <Info className="w-4 h-4 text-slate-500 flex-shrink-0 mt-0.5" />
                         <div>
-                            <strong>Catatan Analisis:</strong> Batang merah menandai bulan dengan curah hujan tinggi/ekstrem (&gt;300 mm). Garis oranye putus-putus menggambarkan normal klimatologis rata-rata 30 tahun wilayah {selectedRegion}.
+                            <strong>Catatan Analisis:</strong> Batang biru menandai bulan dengan curah hujan terakumulasi, dan batang merah menandai curah hujan tinggi (&gt;300 mm). Garis oranye putus-putus menggambarkan normal klimatologis rata-rata 30 tahun wilayah {selectedRegion}.
                         </div>
                     </div>
                 </section>
 
-                
+                {/* Section Zona Musim */}
                 <section id="prediksi" className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className="lg:col-span-2 bg-white rounded-xl border border-bmkg-border p-5 sm:p-6 shadow-sm space-y-4">
                         <div className="border-b border-gray-100 pb-3">
@@ -386,7 +376,6 @@ export default function Iklim() {
                         </p>
                     </div>
 
-                    
                     <div className="bg-[#0f172a] text-white rounded-xl p-5 sm:p-6 shadow-sm flex flex-col justify-between border border-slate-800">
                         <div>
                             <span className="text-[10px] font-bold text-sky-200 uppercase tracking-widest block mb-1">
@@ -417,7 +406,7 @@ export default function Iklim() {
                     </div>
                 </section>
 
-                
+                {/* Section Unduhan Buletin Resmi */}
                 <section id="buletin" className="space-y-4">
                     <div className="border-b-2 border-bmkg-primary pb-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <div>
@@ -429,11 +418,10 @@ export default function Iklim() {
                             </h3>
                         </div>
 
-                        
                         <div className="flex items-center gap-1.5 self-start sm:self-auto text-xs">
                             <button
                                 onClick={() => setBulletinFilter('all')}
-                                className={`px-2.5 py-1 rounded-md font-semibold ${
+                                className={`px-2.5 py-1 rounded-md font-semibold cursor-pointer ${
                                     bulletinFilter === 'all' ? 'bg-bmkg-primary text-white' : 'bg-white text-gray-600 border'
                                 }`}
                             >
@@ -441,7 +429,7 @@ export default function Iklim() {
                             </button>
                             <button
                                 onClick={() => setBulletinFilter('buletin')}
-                                className={`px-2.5 py-1 rounded-md font-semibold ${
+                                className={`px-2.5 py-1 rounded-md font-semibold cursor-pointer ${
                                     bulletinFilter === 'buletin' ? 'bg-bmkg-primary text-white' : 'bg-white text-gray-600 border'
                                 }`}
                             >
@@ -449,7 +437,7 @@ export default function Iklim() {
                             </button>
                             <button
                                 onClick={() => setBulletinFilter('peta')}
-                                className={`px-2.5 py-1 rounded-md font-semibold ${
+                                className={`px-2.5 py-1 rounded-md font-semibold cursor-pointer ${
                                     bulletinFilter === 'peta' ? 'bg-bmkg-primary text-white' : 'bg-white text-gray-600 border'
                                 }`}
                             >
@@ -457,7 +445,7 @@ export default function Iklim() {
                             </button>
                             <button
                                 onClick={() => setBulletinFilter('laporan')}
-                                className={`px-2.5 py-1 rounded-md font-semibold ${
+                                className={`px-2.5 py-1 rounded-md font-semibold cursor-pointer ${
                                     bulletinFilter === 'laporan' ? 'bg-bmkg-primary text-white' : 'bg-white text-gray-600 border'
                                 }`}
                             >
@@ -466,42 +454,58 @@ export default function Iklim() {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {filteredBulletins.map((doc) => (
-                            <div 
-                                key={doc.id}
-                                className="bg-white p-4 rounded-xl border border-bmkg-border shadow-xs hover:border-bmkg-accent transition-all flex items-start justify-between gap-3"
-                            >
-                                <div className="flex items-start gap-3">
-                                    <div className="w-10 h-10 rounded-lg bg-bmkg-light flex items-center justify-center font-mono font-bold text-bmkg-primary text-xs flex-shrink-0">
-                                        {doc.fileType}
-                                    </div>
-                                    <div>
-                                        <h4 className="text-xs font-bold text-bmkg-navy leading-snug">
-                                            {doc.title}
-                                        </h4>
-                                        <div className="flex items-center gap-2 mt-1 text-[11px] text-gray-500">
-                                            <span>{doc.publishedDate}</span>
-                                            <span>•</span>
-                                            <span className="font-mono">{doc.fileSize}</span>
-                                        </div>
-                                    </div>
-                                </div>
+                    {filteredBulletins.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {filteredBulletins.map((doc) => {
+                                const downloadHref = doc.download_url && doc.download_url !== '#' 
+                                    ? doc.download_url 
+                                    : (doc.file_path ? `/storage/${doc.file_path}` : '#');
 
-                                <a
-                                    href={doc.downloadUrl}
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        alert(`Mengunduh dokumen: ${doc.title}`);
-                                    }}
-                                    className="px-3 py-1.5 rounded-lg border border-bmkg-primary text-bmkg-primary hover:bg-bmkg-primary hover:text-white text-xs font-bold flex items-center gap-1 transition-colors flex-shrink-0"
-                                >
-                                    <Download className="w-3.5 h-3.5" />
-                                    <span>Unduh</span>
-                                </a>
-                            </div>
-                        ))}
-                    </div>
+                                return (
+                                    <div 
+                                        key={doc.id}
+                                        className="bg-white p-4 rounded-xl border border-bmkg-border shadow-xs hover:border-bmkg-accent transition-all flex items-start justify-between gap-3"
+                                    >
+                                        <div className="flex items-start gap-3 min-w-0">
+                                            <div className="w-10 h-10 rounded-lg bg-bmkg-light flex items-center justify-center font-mono font-bold text-bmkg-primary text-xs flex-shrink-0 uppercase">
+                                                {doc.file_type || 'PDF'}
+                                            </div>
+                                            <div className="min-w-0">
+                                                <h4 className="text-xs font-bold text-bmkg-navy leading-snug truncate" title={doc.title}>
+                                                    {doc.title}
+                                                </h4>
+                                                {doc.summary && (
+                                                    <p className="text-[11px] text-gray-500 line-clamp-1 mt-0.5">
+                                                        {doc.summary}
+                                                    </p>
+                                                )}
+                                                <div className="flex items-center gap-2 mt-1 text-[11px] text-gray-400">
+                                                    <span>{doc.published_date || doc.edition}</span>
+                                                    <span>•</span>
+                                                    <span className="font-mono">{doc.file_size || '1.5 MB'}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <a
+                                            href={downloadHref}
+                                            download={downloadHref !== '#' ? true : undefined}
+                                            target={downloadHref !== '#' ? '_blank' : undefined}
+                                            rel="noreferrer"
+                                            className="px-3 py-1.5 rounded-lg border border-bmkg-primary text-bmkg-primary hover:bg-bmkg-primary hover:text-white text-xs font-bold flex items-center gap-1 transition-colors flex-shrink-0 cursor-pointer"
+                                        >
+                                            <Download className="w-3.5 h-3.5" />
+                                            <span>Unduh</span>
+                                        </a>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <div className="p-8 text-center bg-white rounded-xl border border-gray-200 text-gray-500 text-xs">
+                            Belum ada dokumen atau buletin yang dipublikasikan dalam kategori ini.
+                        </div>
+                    )}
                 </section>
             </div>
         </MainLayout>

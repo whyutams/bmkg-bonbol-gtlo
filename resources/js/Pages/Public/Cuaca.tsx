@@ -72,14 +72,50 @@ const HOURLY_HUM = [88, 76, 68, 72, 80, 84, 88, 90];
 
 export default function Cuaca() {
     const [selectedDistrict, setSelectedDistrict] = useState<string>('Suwawa (Ibukota)');
-    const currentData = DISTRICT_LIST.find(d => d.name === selectedDistrict) || DISTRICT_LIST[0];
+    const [districts, setDistricts] = useState<DistrictForecast[]>(DISTRICT_LIST);
+    const [hourlyHours, setHourlyHours] = useState<string[]>(HOURLY_HOURS);
+    const [hourlyTemp, setHourlyTemp] = useState<number[]>(HOURLY_TEMP);
+    const [hourlyHum, setHourlyHum] = useState<number[]>(HOURLY_HUM);
+    const [isLiveBmkg, setIsLiveBmkg] = useState<boolean>(false);
+
+    useEffect(() => {
+        fetch('/api/bmkg/cuaca')
+            .then(res => res.json())
+            .then(json => {
+                if (json?.data?.[0]?.cuaca?.[0]?.length) {
+                    const hourlyArr = json.data[0].cuaca[0];
+                    const labels = hourlyArr.map((h: any) => h.local_datetime?.split(' ')[1]?.substring(0, 5) || '12:00');
+                    const temps = hourlyArr.map((h: any) => Number(h.t) || 28);
+                    const hums = hourlyArr.map((h: any) => Number(h.hu) || 75);
+                    
+                    setHourlyHours(labels);
+                    setHourlyTemp(temps);
+                    setHourlyHum(hums);
+                    setIsLiveBmkg(true);
+
+                    const currentFirst = hourlyArr[0];
+                    if (currentFirst) {
+                        setDistricts(prev => prev.map(d => ({
+                            ...d,
+                            temp: Number(currentFirst.t) || d.temp,
+                            condition: currentFirst.weather_desc || d.condition,
+                            humidity: Number(currentFirst.hu) || d.humidity,
+                            wind: Math.round(Number(currentFirst.ws) || d.wind),
+                        })));
+                    }
+                }
+            })
+            .catch(() => console.log('Menggunakan data klimatologi lokal'));
+    }, []);
+
+    const currentData = districts.find(d => d.name === selectedDistrict) || districts[0];
 
     const chartData = {
-        labels: HOURLY_HOURS,
+        labels: hourlyHours,
         datasets: [
             {
                 label: 'Suhu Udara (°C)',
-                data: HOURLY_TEMP,
+                data: hourlyTemp,
                 borderColor: '#1a6fc4',
                 backgroundColor: 'rgba(26, 111, 196, 0.1)',
                 fill: true,
@@ -92,7 +128,7 @@ export default function Cuaca() {
             },
             {
                 label: 'Kelembaban Udara (%)',
-                data: HOURLY_HUM,
+                data: hourlyHum,
                 borderColor: '#16a34a',
                 backgroundColor: 'transparent',
                 borderDash: [5, 5],

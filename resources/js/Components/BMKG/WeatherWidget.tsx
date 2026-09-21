@@ -206,7 +206,46 @@ const GORONTALO_CITIES: WeatherDistrict[] = [
 
 export default function WeatherWidget() {
     const [selectedTab, setSelectedTab] = useState<'bonebol' | 'gorontalo'>('bonebol');
-    const displayList = selectedTab === 'bonebol' ? BONE_BOLANGO_DISTRICTS : GORONTALO_CITIES;
+    const [boneBolDistricts, setBoneBolDistricts] = useState<WeatherDistrict[]>(BONE_BOLANGO_DISTRICTS);
+    const [gorontaloCities, setGorontaloCities] = useState<WeatherDistrict[]>(GORONTALO_CITIES);
+
+    React.useEffect(() => {
+        fetch('/api/bmkg/cuaca')
+            .then(res => res.json())
+            .then(json => {
+                if (json?.data?.[0]?.cuaca?.[0]?.length) {
+                    const cur = json.data[0].cuaca[0][0];
+                    if (cur) {
+                        const tempVal = Number(cur.t) || 30;
+                        const humVal = Number(cur.hu) || 75;
+                        const condDesc = cur.weather_desc || 'Cerah Berawan';
+                        const windVal = Math.round(Number(cur.ws) || 10);
+                        const windDir = cur.wd || 'Tenggara';
+
+                        setBoneBolDistricts(prev => prev.map(d => ({
+                            ...d,
+                            temp: tempVal,
+                            humidity: humVal,
+                            condition: condDesc,
+                            windSpeed: windVal,
+                            windDirection: windDir,
+                        })));
+
+                        setGorontaloCities(prev => prev.map(c => ({
+                            ...c,
+                            temp: tempVal,
+                            humidity: humVal,
+                            condition: condDesc,
+                            windSpeed: windVal,
+                            windDirection: windDir,
+                        })));
+                    }
+                }
+            })
+            .catch(() => console.log('Weather widget using local fallback'));
+    }, []);
+
+    const displayList = selectedTab === 'bonebol' ? boneBolDistricts : gorontaloCities;
 
     const getWeatherEmoji = (code: number) => {
         switch (code) {

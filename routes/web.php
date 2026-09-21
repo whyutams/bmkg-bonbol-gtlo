@@ -21,6 +21,7 @@ Route::get('/gempa', [PortalController::class, 'gempa'])->name('gempa');
 Route::get('/layanan', [PortalController::class, 'layanan'])->name('layanan');
 
 Route::post('/layanan/ptsp', [PortalController::class, 'submitPtsp'])->name('layanan.ptsp.submit');
+Route::post('/layanan/ikm', [PortalController::class, 'submitIkm'])->name('layanan.ikm.submit');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

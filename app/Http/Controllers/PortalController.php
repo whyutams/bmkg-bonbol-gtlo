@@ -13,8 +13,27 @@ class PortalController extends Controller
     public function beranda(): Response
     {
         $warning = \App\Models\EarlyWarning::where('is_active', true)->latest()->first();
+        $hthRecords = \App\Models\HthData::where('region_name', 'Bone Bolango')->get();
+        $avgHth = $hthRecords->count() > 0 ? round($hthRecords->avg('days_without_rain')) : 3;
+        $maxHth = $hthRecords->count() > 0 ? $hthRecords->max('days_without_rain') : 5;
+        $cat = \App\Models\HthData::determineCategory($avgHth);
+
+        $hthSummary = [
+            'days' => $avgHth,
+            'maxDays' => $maxHth,
+            'category' => $cat['category'],
+            'label' => $cat['label'],
+            'dasarian' => $hthRecords->first()?->dasarian ?? 'II',
+            'month' => $hthRecords->first()?->month ?? 'September',
+            'year' => $hthRecords->first()?->year ?? 2026,
+        ];
+
+        $latestBulletins = \App\Models\Bulletin::where('is_published', true)->latest('published_date')->take(3)->get();
+
         return Inertia::render('Public/Beranda', [
             'dbWarning' => $warning,
+            'dbHthSummary' => $hthSummary,
+            'dbLatestBulletins' => $latestBulletins,
         ]);
     }
 
@@ -39,7 +58,7 @@ class PortalController extends Controller
 
     public function iklim(): Response
     {
-        $hth = \App\Models\HthData::where('dasarian', 'II')->where('month', 'September')->where('year', 2026)->get();
+        $hth = \App\Models\HthData::orderByRaw("FIELD(region_name, 'Bone Bolango', 'Gorontalo')")->orderBy('district_name')->get();
         $bulletins = \App\Models\Bulletin::where('is_published', true)->latest('published_date')->get();
         return Inertia::render('Public/Iklim', [
             'dbHth' => $hth,
@@ -181,6 +200,69 @@ class PortalController extends Controller
         return redirect()->back()->with([
             'success' => 'Permohonan berhasil dikirim ke loket PTSP BMKG Bone Bolango!',
             'ticket_number' => $ticketNumber,
+        ]);
+    }
+
+    public function apiCuaca()
+    {
+        return Cache::remember('bmkg_cuaca_gorontalo', 1800, function () {
+            try {
+                $res = Http::timeout(8)->withoutVerifying()->get('https://api.bmkg.go.id/publik/prakiraan-cuaca?adm4=75.71.01.1001');
+                if ($res->successful()) {
+                    return response()->json($res->json());
+                }
+                return response()->json(['status' => 'fallback'], 200);
+            } catch (\Exception $e) {
+                return response()->json(['status' => 'fallback', 'message' => $e->getMessage()], 200);
+            }
+        });
+    }
+
+    public function submitIkm(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $validated = $request->validate([
+            'respondent_name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'nullable|string|max:30',
+            'service_type' => 'required|string|max:150',
+            'q1_persyaratan' => 'required|integer|min:1|max:4',
+            'q2_prosedur' => 'required|integer|min:1|max:4',
+            'q3_waktu' => 'required|integer|min:1|max:4',
+            'q4_biaya' => 'required|integer|min:1|max:4',
+            'q5_produk' => 'required|integer|min:1|max:4',
+            'q6_kompetensi' => 'required|integer|min:1|max:4',
+            'q7_perilaku' => 'required|integer|min:1|max:4',
+            'q8_sarana' => 'required|integer|min:1|max:4',
+            'q9_pengaduan' => 'required|integer|min:1|max:4',
+            'feedback' => 'nullable|string|max:1000',
+        ]);
+
+        $sum = $validated['q1_persyaratan'] +
+               $validated['q2_prosedur'] +
+               $validated['q3_waktu'] +
+               $validated['q4_biaya'] +
+               $validated['q5_produk'] +
+               $validated['q6_kompetensi'] +
+               $validated['q7_perilaku'] +
+               $validated['q8_sarana'] +
+               $validated['q9_pengaduan'];
+
+        $scoreTotal = round(($sum / 36) * 100, 2);
+
+        $survey = \App\Models\IkmSurvey::create(array_merge($validated, [
+            'score_total' => $scoreTotal,
+            'ip_address' => $request->ip(),
+        ]));
+
+        \App\Models\AuditLog::log(
+            'SURVEI_IKM_ONLINE',
+            'IKM',
+            "Survei kepuasan masyarakat (IKM) baru dikirim oleh {$survey->respondent_name} ({$survey->service_type}) dengan skor {$scoreTotal}."
+        );
+
+        return redirect()->back()->with([
+            'success_ikm' => 'Terima kasih! Survei kepuasan Anda berhasil dicatat dan masuk ke database sistem kami.',
+            'ikm_score' => $scoreTotal,
         ]);
     }
 }

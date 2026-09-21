@@ -42,16 +42,9 @@ export default function Edit({
                     <UpdatePasswordForm className="w-full" />
                 </div>
 
-                {user.role !== 'superadmin' ? (
+                {user.role !== 'superadmin' && (
                     <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-2xs">
                         <DeleteUserForm className="w-full" />
-                    </div>
-                ) : (
-                    <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-center gap-3">
-                        <Shield className="w-5 h-5 text-amber-600 flex-shrink-0" />
-                        <p>
-                            <strong>Akun Super Admin Terproteksi:</strong> Akun Super Admin tidak dapat dihapus secara mandiri untuk menjaga integritas dan ketersediaan akses sistem Staklim Bone Bolango.
-                        </p>
                     </div>
                 )}
             </div>

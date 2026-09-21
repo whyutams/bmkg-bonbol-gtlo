@@ -20,24 +20,56 @@ import {
     CheckCircle2
 } from 'lucide-react';
 
-export default function Beranda() {
+interface HthSummary {
+    days: number;
+    maxDays: number;
+    category: string;
+    label: string;
+    dasarian: string;
+    month: string;
+    year: number;
+}
+
+interface BulletinItem {
+    id: number;
+    title: string;
+    edition?: string;
+    category?: string;
+    file_size?: string;
+    file_type?: string;
+    file_path?: string;
+    download_url?: string;
+    published_date?: string;
+    summary?: string;
+}
+
+interface BerandaProps {
+    dbWarning?: any;
+    dbHthSummary?: HthSummary;
+    dbLatestBulletins?: BulletinItem[];
+}
+
+export default function Beranda({ dbWarning, dbHthSummary, dbLatestBulletins = [] }: BerandaProps) {
+    const hthDays = dbHthSummary?.days ?? 3;
+    const hthLabel = dbHthSummary?.label ?? 'Sangat Pendek (Aman)';
+
     return (
         <MainLayout title="Portal Informasi Cuaca, Iklim, dan Gempabumi">
-            
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-4 space-y-6">
                 
+                {/* Peringatan Dini Cuaca */}
                 <section aria-label="Peringatan Dini Cuaca">
-                    <EarlyWarningBanner />
+                    <EarlyWarningBanner dbWarning={dbWarning} />
                 </section>
 
-                
+                {/* Informasi Cuaca dan Gempabumi Utama */}
                 <section aria-label="Informasi Cuaca dan Gempabumi Utama">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
                         
                         <div className="lg:col-span-7 flex flex-col space-y-6">
                             <WeatherWidget />
 
-                            
+                            {/* Status Iklim Terkini dari Database */}
                             <div className="bg-white rounded-xl border border-bmkg-border p-4 shadow-sm">
                                 <div className="flex items-center justify-between border-b border-gray-100 pb-2.5 mb-3">
                                     <div className="flex items-center gap-2">
@@ -58,36 +90,37 @@ export default function Beranda() {
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
                                     <div className="p-2.5 rounded-lg bg-bmkg-surface border border-bmkg-border/60">
                                         <span className="text-[10px] text-gray-500 uppercase block">Monitoring HTH</span>
-                                        <div className="font-mono text-xl font-bold text-bmkg-navy mt-0.5">3 Hari</div>
-                                        <span className="text-[10px] font-semibold text-slate-700 bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded">Pendek (Aman)</span>
+                                        <div className="font-mono text-xl font-bold text-bmkg-navy mt-0.5">{hthDays} Hari</div>
+                                        <span className="text-[10px] font-semibold text-slate-700 bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded truncate block mt-1" title={hthLabel}>
+                                            {hthLabel}
+                                        </span>
                                     </div>
 
                                     <div className="p-2.5 rounded-lg bg-bmkg-surface border border-bmkg-border/60">
                                         <span className="text-[10px] text-gray-500 uppercase block">Curah Hujan Bulan</span>
                                         <div className="font-mono text-xl font-bold text-bmkg-navy mt-0.5">185 mm</div>
-                                        <span className="text-[10px] text-gray-500">Kategori Menengah</span>
+                                        <span className="text-[10px] text-gray-500 block mt-1">Kategori Menengah</span>
                                     </div>
 
                                     <div className="p-2.5 rounded-lg bg-bmkg-surface border border-bmkg-border/60">
                                         <span className="text-[10px] text-gray-500 uppercase block">Sifat Hujan</span>
                                         <div className="font-mono text-lg font-bold text-bmkg-navy mt-1">Normal</div>
-                                        <span className="text-[10px] text-gray-500">85% - 115%</span>
+                                        <span className="text-[10px] text-gray-500 block mt-1">85% - 115%</span>
                                     </div>
 
                                     <div className="p-2.5 rounded-lg bg-bmkg-surface border border-bmkg-border/60">
                                         <span className="text-[10px] text-gray-500 uppercase block">Indeks ENSO</span>
                                         <div className="font-mono text-lg font-bold text-bmkg-navy mt-1">Netral</div>
-                                        <span className="text-[10px] text-gray-500">Nino 3.4 (+0.2°C)</span>
+                                        <span className="text-[10px] text-gray-500 block mt-1">Nino 3.4 (+0.2°C)</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        
+                        {/* Gempabumi Terkini & Satelit */}
                         <div className="lg:col-span-5 flex flex-col space-y-6">
                             <EarthquakeRealtime />
 
-                            
                             <div className="bg-white rounded-xl border border-bmkg-border shadow-sm overflow-hidden flex flex-col">
                                 <div className="bg-[#0f172a] px-4 py-3 text-white flex items-center justify-between border-b border-slate-800">
                                     <div className="flex items-center gap-2">
@@ -114,7 +147,6 @@ export default function Beranda() {
                                         </div>
                                     </div>
 
-                                    
                                     <div className="mt-3 pt-2 border-t border-gray-100">
                                         <div className="flex items-center justify-between text-[10px] text-gray-500 mb-1.5 font-medium">
                                             <span>Kategori Suhu Puncak Awan:</span>
@@ -145,7 +177,7 @@ export default function Beranda() {
                     </div>
                 </section>
 
-                
+                {/* Layanan Publik */}
                 <section aria-label="Layanan Publik dan Unduhan" className="pt-2">
                     <div className="border-b-2 border-bmkg-primary pb-2 mb-4 flex items-center justify-between">
                         <div>
@@ -250,7 +282,7 @@ export default function Beranda() {
                     </div>
                 </section>
 
-                
+                {/* Kabar Terkini & Publikasi Resmi dari Database */}
                 <section aria-label="Berita dan Artikel" className="pt-4">
                     <div className="border-b-2 border-bmkg-primary pb-2 mb-4 flex items-center justify-between">
                         <div>
@@ -258,78 +290,61 @@ export default function Beranda() {
                                 Kabar Terkini & Publikasi
                             </span>
                             <h2 className="text-base sm:text-lg font-extrabold text-bmkg-navy">
-                                Berita dan Siaran Pers BMKG Bone Bolango
+                                Berita dan Publikasi Iklim BMKG Bone Bolango
                             </h2>
                         </div>
+                        <Link 
+                            href="/iklim#buletin" 
+                            className="text-xs font-bold text-bmkg-primary hover:text-bmkg-secondary flex items-center gap-1"
+                        >
+                            <span>Semua Publikasi</span>
+                            <ArrowRight className="w-3.5 h-3.5" />
+                        </Link>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        
-                        <div className="bg-white rounded-xl border border-bmkg-border overflow-hidden shadow-sm flex flex-col justify-between hover:border-bmkg-accent transition-all">
-                            <div className="p-5">
-                                <div className="flex items-center justify-between text-[11px] text-gray-500 mb-2">
-                                    <span className="px-2 py-0.5 rounded bg-blue-50 text-bmkg-primary font-semibold text-[10px]">
-                                        IKLIM & CUACA
-                                    </span>
-                                    <span>18 September 2026</span>
-                                </div>
-                                <h3 className="text-sm font-bold text-bmkg-navy hover:text-bmkg-primary transition-colors line-clamp-2 mb-2">
-                                    BMKG Staklim Bone Bolango Rilis Analisis Curah Hujan Dasarian II September 2026
-                                </h3>
-                                <p className="text-xs text-gray-600 line-clamp-3 leading-relaxed">
-                                    Hasil monitoring menunjukkan kondisi Hari Tanpa Hujan (HTH) di wilayah Bone Bolango berada pada kategori Sangat Pendek (1-5 hari) dengan curah hujan terakumulasi normal.
-                                </p>
-                            </div>
-                            <div className="px-5 py-3 bg-bmkg-surface border-t border-gray-100 text-xs font-semibold text-bmkg-primary flex items-center justify-between">
-                                <Link href="/iklim#analisis" className="hover:underline">Baca Selengkapnya</Link>
-                                <span className="text-gray-400 text-[10px]">Staklim Bone Bolango</span>
-                            </div>
-                        </div>
+                    {dbLatestBulletins.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {dbLatestBulletins.map((bulletin) => {
+                                const downloadUrl = bulletin.download_url && bulletin.download_url !== '#'
+                                    ? bulletin.download_url
+                                    : (bulletin.file_path ? `/storage/${bulletin.file_path}` : '/iklim#buletin');
 
-                        
-                        <div className="bg-white rounded-xl border border-bmkg-border overflow-hidden shadow-sm flex flex-col justify-between hover:border-bmkg-accent transition-all">
-                            <div className="p-5">
-                                <div className="flex items-center justify-between text-[11px] text-gray-500 mb-2">
-                                    <span className="px-2 py-0.5 rounded bg-blue-50 text-bmkg-primary font-semibold text-[10px]">
-                                        SOSIALISASI
-                                    </span>
-                                    <span>12 September 2026</span>
-                                </div>
-                                <h3 className="text-sm font-bold text-bmkg-navy hover:text-bmkg-primary transition-colors line-clamp-2 mb-2">
-                                    Sekolah Lapang Iklim (SLI) Tematik Mendukung Ketahanan Pangan Petani di Bone Bolango
-                                </h3>
-                                <p className="text-xs text-gray-600 line-clamp-3 leading-relaxed">
-                                    Penyuluhan literasi iklim bagi kelompok tani di Kecamatan Tilongkabila dan Suwawa guna mengantisipasi perubahan pola curah hujan pada musim tanam mendatang.
-                                </p>
-                            </div>
-                            <div className="px-5 py-3 bg-bmkg-surface border-t border-gray-100 text-xs font-semibold text-bmkg-primary flex items-center justify-between">
-                                <Link href="/profil" className="hover:underline">Baca Selengkapnya</Link>
-                                <span className="text-gray-400 text-[10px]">Humas BMKG</span>
-                            </div>
+                                return (
+                                    <div 
+                                        key={bulletin.id}
+                                        className="bg-white rounded-xl border border-bmkg-border overflow-hidden shadow-sm flex flex-col justify-between hover:border-bmkg-accent transition-all"
+                                    >
+                                        <div className="p-5">
+                                            <div className="flex items-center justify-between text-[11px] text-gray-500 mb-2">
+                                                <span className="px-2 py-0.5 rounded bg-blue-50 text-bmkg-primary font-semibold text-[10px] uppercase">
+                                                    {bulletin.category || 'IKLIM & CUACA'}
+                                                </span>
+                                                <span>{bulletin.published_date || bulletin.edition}</span>
+                                            </div>
+                                            <h3 className="text-sm font-bold text-bmkg-navy hover:text-bmkg-primary transition-colors line-clamp-2 mb-2">
+                                                {bulletin.title}
+                                            </h3>
+                                            <p className="text-xs text-gray-600 line-clamp-3 leading-relaxed">
+                                                {bulletin.summary || 'Rilis publikasi iklim resmi Stasiun Klimatologi BMKG Bone Bolango.'}
+                                            </p>
+                                        </div>
+                                        <div className="px-5 py-3 bg-bmkg-surface border-t border-gray-100 text-xs font-semibold text-bmkg-primary flex items-center justify-between">
+                                            <Link href="/iklim#buletin" className="hover:underline">
+                                                Baca Selengkapnya
+                                            </Link>
+                                            <span className="text-gray-400 text-[10px] font-mono">
+                                                {bulletin.file_size || 'PDF'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
-
-                        
-                        <div className="bg-white rounded-xl border border-bmkg-border overflow-hidden shadow-sm flex flex-col justify-between hover:border-bmkg-accent transition-all">
-                            <div className="p-5">
-                                <div className="flex items-center justify-between text-[11px] text-gray-500 mb-2">
-                                    <span className="px-2 py-0.5 rounded bg-blue-50 text-bmkg-primary font-semibold text-[10px]">
-                                        BENCANA
-                                    </span>
-                                    <span>05 September 2026</span>
-                                </div>
-                                <h3 className="text-sm font-bold text-bmkg-navy hover:text-bmkg-primary transition-colors line-clamp-2 mb-2">
-                                    Edukasi Kesiapsiagaan Gempabumi dan Evakuasi Mandiri Bersama BPBD Gorontalo
-                                </h3>
-                                <p className="text-xs text-gray-600 line-clamp-3 leading-relaxed">
-                                    BMKG memperkuat pemahaman masyarakat wilayah pesisir Bonepantai terkait mekanisme respons peringatan dini gempa dan tsunami secara cepat dan tepat.
-                                </p>
-                            </div>
-                            <div className="px-5 py-3 bg-bmkg-surface border-t border-gray-100 text-xs font-semibold text-bmkg-primary flex items-center justify-between">
-                                <Link href="/gempa#mitigasi" className="hover:underline">Baca Selengkapnya</Link>
-                                <span className="text-gray-400 text-[10px]">Geofisika BMKG</span>
-                            </div>
+                    ) : (
+                        <div className="p-8 text-center bg-white rounded-xl border border-slate-200 text-slate-500 text-xs">
+                            Belum ada rilis publikasi terbaru.
                         </div>
-                    </div>
+                    )}
                 </section>
             </div>
         </MainLayout>

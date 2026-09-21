@@ -4,9 +4,11 @@ import { WarningLevel, EarlyWarning } from '@/types/bmkg';
 
 interface EarlyWarningBannerProps {
     warning?: EarlyWarning;
+    dbWarning?: any;
 }
 
-export default function EarlyWarningBanner({ warning }: EarlyWarningBannerProps) {
+export default function EarlyWarningBanner({ warning, dbWarning }: EarlyWarningBannerProps) {
+    const rawData = dbWarning || warning;
     const defaultWarning: EarlyWarning = {
         level: 'normal',
         title: 'Status Cuaca Normal - Tidak Ada Peringatan Dini Ekstrem',
@@ -16,7 +18,14 @@ export default function EarlyWarningBanner({ warning }: EarlyWarningBannerProps)
         affectedAreas: ['Kabupaten Bone Bolango', 'Kota Gorontalo', 'Kabupaten Gorontalo']
     };
 
-    const data = warning || defaultWarning;
+    const data: EarlyWarning = rawData ? {
+        level: rawData.level || 'normal',
+        title: rawData.title || defaultWarning.title,
+        description: rawData.description || defaultWarning.description,
+        issuedAt: rawData.issued_at || rawData.issuedAt || defaultWarning.issuedAt,
+        validUntil: rawData.valid_until || rawData.validUntil || defaultWarning.validUntil,
+        affectedAreas: rawData.affected_areas || rawData.affectedAreas || defaultWarning.affectedAreas,
+    } : defaultWarning;
 
     const levelConfigs = {
         normal: {
