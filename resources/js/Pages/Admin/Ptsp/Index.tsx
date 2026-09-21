@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Head, router } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { 
-    FileText, 
-    CheckCircle2, 
-    Clock, 
-    XCircle, 
-    AlertCircle, 
-    Eye, 
-    Search, 
-    Filter, 
-    Coins, 
+import {
+    FileText,
+    CheckCircle2,
+    Clock,
+    XCircle,
+    AlertCircle,
+    Eye,
+    Search,
+    Filter,
+    Coins,
     Building2,
     Calendar,
     Send
@@ -102,7 +102,7 @@ export default function PtspIndex({ tickets, currentFilter }: PtspProps) {
             <Head title="Tiket Layanan PTSP - Admin BMKG" />
 
             <div className="space-y-6">
-                
+
                 <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div>
                         <h2 className="text-sm font-bold text-slate-800">Daftar Permohonan Data Klimatologi (PTSP Online)</h2>
@@ -119,11 +119,10 @@ export default function PtspIndex({ tickets, currentFilter }: PtspProps) {
                             <button
                                 key={tab.id}
                                 onClick={() => handleFilterChange(tab.id)}
-                                className={`px-3 py-1.5 rounded-md font-semibold transition-colors ${
-                                    currentFilter === tab.id 
-                                        ? 'bg-white text-bmkg-primary shadow-xs' 
-                                        : 'text-slate-600 hover:text-slate-900'
-                                }`}
+                                className={`px-3 py-1.5 rounded-md font-semibold transition-colors ${currentFilter === tab.id
+                                    ? 'bg-white text-bmkg-primary shadow-xs'
+                                    : 'text-slate-600 hover:text-slate-900'
+                                    }`}
                             >
                                 {tab.label}
                             </button>
@@ -131,7 +130,7 @@ export default function PtspIndex({ tickets, currentFilter }: PtspProps) {
                     </div>
                 </div>
 
-                
+
                 <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full text-xs text-left">
@@ -167,23 +166,20 @@ export default function PtspIndex({ tickets, currentFilter }: PtspProps) {
                                                 <span className="text-slate-700 text-[11px] line-clamp-1">{t.purpose_category}</span>
                                             </td>
                                             <td className="py-3 px-4 font-mono">
-                                                {t.is_free_education ? (
-                                                    <span className="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                                                        Tarif Rp 0 (Riset)
-                                                    </span>
-                                                ) : (
-                                                    <span className="text-slate-800 font-bold">
-                                                        Rp {parseInt(t.tariff_amount).toLocaleString('id-ID')}
-                                                    </span>
-                                                )}
+                                                <span className="text-slate-800 font-bold">
+                                                    {t.is_free_education && parseInt(t.tariff_amount).toLocaleString('id-ID') == "0" ? (
+                                                        <span className='text-green-600'>Rp 0 (Riset)</span>
+                                                    ) : (
+                                                        <>Rp {parseInt(t.tariff_amount).toLocaleString('id-ID')}</>
+                                                    )}
+                                                </span>
                                             </td>
                                             <td className="py-3 px-4">
-                                                <span className={`text-[10px] font-bold px-2.5 py-1 rounded uppercase ${
-                                                    t.status === 'menunggu' ? 'bg-amber-100 text-amber-800' :
+                                                <span className={`text-[10px] font-bold px-2.5 py-1 rounded uppercase ${t.status === 'menunggu' ? 'bg-amber-100 text-amber-800' :
                                                     t.status === 'diproses' ? 'bg-blue-100 text-blue-800' :
-                                                    t.status === 'selesai' ? 'bg-emerald-100 text-emerald-800' :
-                                                    'bg-red-100 text-red-800'
-                                                }`}>
+                                                        t.status === 'selesai' ? 'bg-emerald-100 text-emerald-800' :
+                                                            'bg-red-100 text-red-800'
+                                                    }`}>
                                                     {t.status}
                                                 </span>
                                             </td>
@@ -220,7 +216,7 @@ export default function PtspIndex({ tickets, currentFilter }: PtspProps) {
                     />
                 </div>
 
-                
+
                 {selectedTicket && (
                     <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
                         <div className="bg-white rounded-xl shadow-xl max-w-xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto">

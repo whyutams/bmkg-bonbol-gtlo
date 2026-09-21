@@ -46,7 +46,7 @@ export default function Login({
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-[#001d4a] via-[#002b66] to-[#003580] flex flex-col justify-between p-4 sm:p-6 lg:p-8 font-sans text-slate-100 relative overflow-hidden">
-            <Head title="Masuk Portal Administrasi - BMKG Bone Bolango" />
+            <Head title="Login" />
 
             <div className="absolute inset-0 opacity-5 pointer-events-none bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:24px_24px]"></div>
 
@@ -56,7 +56,7 @@ export default function Login({
                     className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-semibold text-white/90 backdrop-blur-xs transition-colors border border-white/15"
                 >
                     <ArrowLeft className="w-4 h-4" />
-                    <span>Kembali ke Portal Publik</span>
+                    <span>Kembali ke Beranda</span>
                 </Link>
             </header>
 
