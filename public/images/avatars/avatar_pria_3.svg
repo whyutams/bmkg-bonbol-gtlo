@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg_pria_3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#172554"/>
+    </linearGradient>
+    <linearGradient id="skin_3" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f5d0b5"/>
+      <stop offset="100%" stop-color="#dda582"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background Circle -->
+  <rect width="160" height="160" rx="80" fill="url(#bg_pria_3)"/>
+  <circle cx="80" cy="80" r="78" fill="none" stroke="#60a5fa" stroke-width="2" stroke-opacity="0.3"/>
+
+  <!-- Body / Shoulders - Kemeja Biru Langit / Steel Blue PDH -->
+  <path d="M28 160 C30 125 50 113 80 113 C110 113 130 125 132 160 Z" fill="#2563eb"/>
+  <!-- Kerah Kemeja -->
+  <polygon points="65,113 80,126 73,138 58,122" fill="#1d4ed8"/>
+  <polygon points="95,113 80,126 87,138 102,122" fill="#1d4ed8"/>
+  <!-- Kantong Kemeja Kiri dengan Pulpen & Logo BMKG -->
+  <rect x="46" y="136" width="16" height="18" rx="2" fill="#1d4ed8"/>
+  <line x1="51" y1="133" x2="51" y2="139" stroke="#94a3b8" stroke-width="1.8"/> <!-- Pulpen -->
+  <!-- Name Tag Dada Kanan -->
+  <rect x="98" y="137" width="18" height="6" rx="1.5" fill="#0f172a"/>
+  <rect x="100" y="139" width="14" height="2" fill="#f8fafc"/>
+
+  <!-- Leher -->
+  <rect x="73" y="92" width="14" height="24" rx="5" fill="#dda582"/>
+  <path d="M73 104 C73 108 87 108 87 104 Z" fill="#c48a65"/>
+
+  <!-- Kepala -->
+  <ellipse cx="80" cy="74" rx="23" ry="27" fill="url(#skin_3)"/>
+
+  <!-- Telinga -->
+  <circle cx="57" cy="74" r="5" fill="#dda582"/>
+  <circle cx="103" cy="74" r="5" fill="#dda582"/>
+
+  <!-- Rambut Profesional Tegas (Short Crew Cut Pria Dewasa) -->
+  <path d="M57 68 C57 49 66 45 80 45 C94 45 103 49 103 68 C100 58 92 53 80 53 C68 53 60 58 57 68 Z" fill="#0f172a"/>
+
+  <!-- Alis Tegas -->
+  <path d="M65 64 Q71 62 76 64" stroke="#1e293b" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  <path d="M84 64 Q89 62 95 64" stroke="#1e293b" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+
+  <!-- Mata Berkarakter -->
+  <circle cx="71" cy="70.5" r="2.5" fill="#0f172a"/>
+  <circle cx="89" cy="70.5" r="2.5" fill="#0f172a"/>
+  <circle cx="71.8" cy="69.8" r="0.8" fill="#ffffff"/>
+  <circle cx="89.8" cy="69.8" r="0.8" fill="#ffffff"/>
+
+  <!-- Hidung Proporsional -->
+  <path d="M80 70 L78 79 L82 79" stroke="#b37854" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- Senyum Ramah Berwibawa -->
+  <path d="M75 86 Q80 89 85 86" stroke="#9a3412" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+</svg>

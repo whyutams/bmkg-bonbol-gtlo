@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg_wanita_3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#047857"/>
+      <stop offset="100%" stop-color="#064e3b"/>
+    </linearGradient>
+    <linearGradient id="skin_w3" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fae4d4"/>
+      <stop offset="100%" stop-color="#e2b498"/>
+    </linearGradient>
+    <linearGradient id="hijab_3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#475569"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background Circle -->
+  <rect width="160" height="160" rx="80" fill="url(#bg_wanita_3)"/>
+  <circle cx="80" cy="80" r="78" fill="none" stroke="#34d399" stroke-width="2" stroke-opacity="0.3"/>
+
+  <!-- Body / Shoulders - Kemeja / Jas Formal Hijau Tua / Emerald BMKG -->
+  <path d="M28 160 C30 126 50 115 80 115 C110 115 130 126 132 160 Z" fill="#065f46"/>
+  <polygon points="68,124 80,140 92,124 80,115" fill="#f8fafc"/>
+  <polygon points="58,160 70,126 80,140 76,160" fill="#044e3b"/>
+  <polygon points="102,160 90,126 80,140 84,160" fill="#044e3b"/>
+
+  <!-- Hijab Abu-abu Slate Rapi Menutup Dada -->
+  <path d="M52 75 C52 48 64 42 80 42 C96 42 108 48 108 75 C108 100 102 126 95 136 C90 143 85 145 80 145 C75 145 70 143 65 136 C58 126 52 100 52 75 Z" fill="url(#hijab_3)"/>
+
+  <!-- Bukaan Wajah Oval Bersih -->
+  <path d="M63 68 C63 56 70 52 80 52 C90 52 97 56 97 68 C97 86 91 100 80 100 C69 100 63 86 63 68 Z" fill="url(#skin_w3)"/>
+  <path d="M67 59 C71 56 76 55 80 55 C84 55 89 56 93 59 C90 56 85 54 80 54 C75 54 70 56 67 59 Z" fill="#334155"/>
+
+  <!-- Kacamata Tipis Bulat Elegan -->
+  <circle cx="71" cy="69" r="6.5" stroke="#1e293b" stroke-width="1.5" fill="#ffffff" fill-opacity="0.2"/>
+  <circle cx="89" cy="69" r="6.5" stroke="#1e293b" stroke-width="1.5" fill="#ffffff" fill-opacity="0.2"/>
+  <line x1="77.5" y1="69" x2="82.5" y2="69" stroke="#1e293b" stroke-width="1.5"/>
+
+  <!-- Mata di Balik Kacamata -->
+  <circle cx="71" cy="69" r="2.1" fill="#0f172a"/>
+  <circle cx="89" cy="69" r="2.1" fill="#0f172a"/>
+  <circle cx="71.6" cy="68.3" r="0.6" fill="#ffffff"/>
+  <circle cx="89.6" cy="68.3" r="0.6" fill="#ffffff"/>
+
+  <!-- Alis Halus -->
+  <path d="M66 60 Q71 58 76 60" stroke="#475569" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+  <path d="M84 60 Q89 58 94 60" stroke="#475569" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+
+  <!-- Hidung Ramping -->
+  <path d="M80 70 L78.5 77 L81.5 77" stroke="#b88365" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- Senyum Ramah -->
+  <path d="M75 84 Q80 87.5 85 84" stroke="#e11d48" stroke-width="2" stroke-linecap="round" fill="none"/>
+</svg>

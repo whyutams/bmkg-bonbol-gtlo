@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg_pria_1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="skin_1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f8d7be"/>
+      <stop offset="100%" stop-color="#e8b998"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background Circle -->
+  <rect width="160" height="160" rx="80" fill="url(#bg_pria_1)"/>
+  <circle cx="80" cy="80" r="78" fill="none" stroke="#38bdf8" stroke-width="2" stroke-opacity="0.3"/>
+
+  <!-- Body / Shoulders - Jas Navy Formal & Kemeja Putih -->
+  <path d="M28 160 C30 126 50 112 80 112 C110 112 130 126 132 160 Z" fill="#1e3a8a"/>
+  <!-- Kerah Jas -->
+  <path d="M52 160 L70 120 L80 134 L90 120 L108 160 Z" fill="#0f172a"/>
+  <!-- Kemeja Putih Bagian Tengah -->
+  <polygon points="70,120 90,120 84,152 76,152" fill="#f8fafc"/>
+  <!-- Dasi Biru BMKG -->
+  <polygon points="78,126 82,126 84,160 76,160" fill="#0284c7"/>
+  <polygon points="77,123 83,123 84,128 76,128" fill="#0369a1"/>
+
+  <!-- Leher -->
+  <rect x="73" y="92" width="14" height="24" rx="5" fill="#e8b998"/>
+  <path d="M73 104 C73 108 87 108 87 104 Z" fill="#d49f7b"/>
+
+  <!-- Kepala -->
+  <ellipse cx="80" cy="74" rx="23" ry="27" fill="url(#skin_1)"/>
+
+  <!-- Telinga -->
+  <circle cx="57" cy="74" r="5" fill="#e8b998"/>
+  <circle cx="103" cy="74" r="5" fill="#e8b998"/>
+
+  <!-- Rambut Pria Profesional (Side Parting Rapi) -->
+  <path d="M56 70 C56 50 64 45 80 45 C98 45 105 52 105 68 C105 72 103 66 101 64 C97 60 90 58 80 58 C68 58 60 62 57 68 C56 70 56 70 56 70 Z" fill="#1e293b"/>
+  <!-- Belahan Rambut Rapi Kiri -->
+  <path d="M57 68 C59 52 70 48 83 48 C98 48 103 55 104 68 C102 54 92 51 81 51 C70 51 61 56 57 68 Z" fill="#0f172a"/>
+
+  <!-- Alis Profesional -->
+  <path d="M66 65 Q72 63 76 65" stroke="#334155" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  <path d="M84 65 Q88 63 94 65" stroke="#334155" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+
+  <!-- Mata Tenang & Berwibawa -->
+  <circle cx="71" cy="71" r="2.5" fill="#1e293b"/>
+  <circle cx="89" cy="71" r="2.5" fill="#1e293b"/>
+  <circle cx="72" cy="70" r="0.8" fill="#ffffff"/>
+  <circle cx="90" cy="70" r="0.8" fill="#ffffff"/>
+
+  <!-- Hidung Ramping -->
+  <path d="M80 71 L78 79 L82 79" stroke="#c28864" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- Senyum Ramah Formal -->
+  <path d="M75 87 Q80 90 85 87" stroke="#9a3412" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+
+  <!-- Badge / Pin BMKG di Dada Kiri -->
+  <circle cx="58" cy="140" r="3.5" fill="#f59e0b"/>
+  <circle cx="58" cy="140" r="2" fill="#0284c7"/>
+</svg>

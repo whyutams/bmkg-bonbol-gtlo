@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg_wanita_1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#312e81"/>
+      <stop offset="100%" stop-color="#1e1b4b"/>
+    </linearGradient>
+    <linearGradient id="skin_w1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fce7d8"/>
+      <stop offset="100%" stop-color="#e8bd9b"/>
+    </linearGradient>
+    <linearGradient id="hijab_1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background Circle -->
+  <rect width="160" height="160" rx="80" fill="url(#bg_wanita_1)"/>
+  <circle cx="80" cy="80" r="78" fill="none" stroke="#818cf8" stroke-width="2" stroke-opacity="0.3"/>
+
+  <!-- Body / Shoulders - Blazer Kantor Wanita & Kemeja Putih -->
+  <path d="M28 160 C30 126 50 115 80 115 C110 115 130 126 132 160 Z" fill="#334155"/>
+  <!-- Kerah Blazer & V-Neck Kemeja -->
+  <polygon points="68,124 80,140 92,124 80,115" fill="#f8fafc"/>
+  <polygon points="58,160 70,126 80,140 76,160" fill="#1e293b"/>
+  <polygon points="102,160 90,126 80,140 84,160" fill="#1e293b"/>
+
+  <!-- Hijab Formal Rapi Menutup Dada -->
+  <path d="M52 75 C52 48 64 42 80 42 C96 42 108 48 108 75 C108 100 102 126 95 136 C90 143 85 145 80 145 C75 145 70 143 65 136 C58 126 52 100 52 75 Z" fill="url(#hijab_1)"/>
+
+  <!-- Bukaan Wajah Oval Elegan -->
+  <path d="M63 68 C63 56 70 52 80 52 C90 52 97 56 97 68 C97 86 91 100 80 100 C69 100 63 86 63 68 Z" fill="url(#skin_w1)"/>
+  <!-- Ciput / Inner Hijab Tipis Rapi -->
+  <path d="M67 59 C71 56 76 55 80 55 C84 55 89 56 93 59 C90 56 85 54 80 54 C75 54 70 56 67 59 Z" fill="#475569"/>
+
+  <!-- Alis Halus Cantik & Profesional -->
+  <path d="M68 64 Q73 62 77 64" stroke="#475569" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <path d="M83 64 Q87 62 92 64" stroke="#475569" stroke-width="2" stroke-linecap="round" fill="none"/>
+
+  <!-- Mata Anggun & Tegas -->
+  <circle cx="72" cy="69.5" r="2.3" fill="#0f172a"/>
+  <circle cx="88" cy="69.5" r="2.3" fill="#0f172a"/>
+  <circle cx="72.6" cy="68.8" r="0.7" fill="#ffffff"/>
+  <circle cx="88.6" cy="68.8" r="0.7" fill="#ffffff"/>
+
+  <!-- Hidung Ramping -->
+  <path d="M80 69 L78.5 77 L81.5 77" stroke="#c0855f" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- Senyum Ramah Lembut (Lipstik Natural) -->
+  <path d="M75 84 Q80 88 85 84" stroke="#be123c" stroke-width="2" stroke-linecap="round" fill="none"/>
+
+  <!-- Pin Bros Emas BMKG di Hijab -->
+  <circle cx="63" cy="118" r="3" fill="#f59e0b"/>
+  <circle cx="63" cy="118" r="1.5" fill="#ffffff"/>
+</svg>
