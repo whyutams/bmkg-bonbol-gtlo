@@ -33,6 +33,7 @@ php artisan view:cache
 # 6. Jaga kepemilikan dan hak akses berkas web server
 # sudo chown -R $USER:www-data storage bootstrap/cache public/build
 # sudo chmod -R 775 storage bootstrap/cache public/build
+chmod -R 775 storage bootstrap/cache public/build 2>/dev/null || true
 
 echo "✅ Deployment selesai!"
 EOF
