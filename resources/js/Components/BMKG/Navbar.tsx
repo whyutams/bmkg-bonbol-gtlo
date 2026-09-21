@@ -246,16 +246,6 @@ export default function Navbar({ currentRoute }: NavbarProps) {
                             </kbd>
                         </button>
 
-                        <a 
-                            href="https://www.bmkg.go.id" 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-semibold transition-colors"
-                        >
-                            <Compass className="w-3.5 h-3.5 text-slate-500" />
-                            <span>BMKG Pusat</span>
-                        </a>
-
                         
                         <button
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

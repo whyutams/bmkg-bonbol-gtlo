@@ -1,14 +1,14 @@
 import React, { useState, FormEventHandler } from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { 
-    Mail, 
-    Lock, 
-    Eye, 
-    EyeOff, 
-    ShieldCheck, 
-    ArrowLeft, 
-    KeyRound, 
-    CheckCircle2, 
+import {
+    Mail,
+    Lock,
+    Eye,
+    EyeOff,
+    ShieldCheck,
+    ArrowLeft,
+    KeyRound,
+    CheckCircle2,
     AlertCircle,
     UserCheck,
     Building2
@@ -49,7 +49,7 @@ export default function Login({
             <Head title="Masuk Portal Administrasi - BMKG Bone Bolango" />
 
             <div className="absolute inset-0 opacity-5 pointer-events-none bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:24px_24px]"></div>
-            
+
             <header className="relative z-10 max-w-7xl mx-auto w-full flex items-center justify-between">
                 <Link
                     href="/"
@@ -58,11 +58,6 @@ export default function Login({
                     <ArrowLeft className="w-4 h-4" />
                     <span>Kembali ke Portal Publik</span>
                 </Link>
-
-                <div className="flex items-center gap-2 text-[11px] text-white/60">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span>Server Aktif & Terlindungi</span>
-                </div>
             </header>
 
             <main className="relative z-10 w-full max-w-md mx-auto my-8">
@@ -184,14 +179,15 @@ export default function Login({
                             >
                                 <span>{processing ? 'Memproses ...' : 'Login'}</span>
                             </button>
-                        </form> 
+                        </form>
                     </div>
                 </div>
             </main>
 
             <footer className="relative z-10 max-w-7xl mx-auto w-full text-center text-[11px] text-white/50">
-                <p>© 2026 Badan Meteorologi, Klimatologi, dan Geofisika - Stasiun Klimatologi Bone Bolango</p>
-                <p className="text-[10px] text-white/35 mt-0.5">Sistem dilindungi oleh Undang-Undang ITE No. 11/2008 & Kebijakan Keamanan Siber Nasional</p>
+                <div>
+                    © {new Date().getFullYear()} <strong className="text-slate-300">Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)</strong>. Hak Cipta Dilindungi.
+                </div>
             </footer>
         </div>
     );
