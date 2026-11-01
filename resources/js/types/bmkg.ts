@@ -11,6 +11,8 @@ export interface EarthquakeData {
     Potensi: string;
     Dirasakan: string;
     Shakemap: string;
+    is_local?: boolean;
+    source_label?: string;
 }
 
 export interface AutogempaResponse {

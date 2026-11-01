@@ -23,7 +23,6 @@ interface NavbarProps {
 
 export default function Navbar({ currentRoute }: NavbarProps) {
     const [currentTimeWita, setCurrentTimeWita] = useState<string>('');
-    const [currentTimeWib, setCurrentTimeWib] = useState<string>('');
     const [currentDateStr, setCurrentDateStr] = useState<string>('');
     const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
     const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -43,13 +42,6 @@ export default function Navbar({ currentRoute }: NavbarProps) {
                 hour12: false
             }).format(now) + ' WITA';
 
-            const wibStr = new Intl.DateTimeFormat('id-ID', {
-                timeZone: 'Asia/Jakarta',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: false
-            }).format(now) + ' WIB';
 
             const dateStr = new Intl.DateTimeFormat('id-ID', {
                 timeZone: 'Asia/Makassar',
@@ -60,7 +52,6 @@ export default function Navbar({ currentRoute }: NavbarProps) {
             }).format(now);
 
             setCurrentTimeWita(witaStr);
-            setCurrentTimeWib(wibStr);
             setCurrentDateStr(dateStr);
         };
 
@@ -199,8 +190,7 @@ export default function Navbar({ currentRoute }: NavbarProps) {
                         <div className="flex items-center gap-1.5 bg-slate-800/80 px-2.5 py-0.5 rounded border border-slate-700 font-mono text-[11px] text-slate-200">
                             <Clock className="w-3 h-3 text-slate-400" />
                             <span>{currentTimeWita || '00:00:00 WITA'}</span>
-                            <span className="text-slate-500 hidden lg:inline">|</span>
-                            <span className="text-slate-400 hidden lg:inline">{currentTimeWib || '00:00:00 WIB'}</span>
+
                         </div>
                     </div>
                 </div>

@@ -14,7 +14,7 @@ import {
     Eye
 } from 'lucide-react';
 import Pagination, { PaginationLink } from '@/Components/Pagination';
-import { formatTanggalIndo, formatWaktuIndo } from '@/Utils/formatters';
+import { formatTanggalIndo, formatWaktuIndo, getWitaDateOnly } from '@/Utils/formatters';
 
 interface BulletinItem {
     id: number;
@@ -56,7 +56,7 @@ export default function BulletinsIndex({ bulletins }: Props) {
         title: '',
         edition: '',
         category: 'buletin' as 'buletin' | 'peta' | 'laporan',
-        published_date: new Date().toISOString().split('T')[0],
+        published_date: getWitaDateOnly(),
         summary: '',
         file_pdf: null as File | null,
     });
@@ -83,6 +83,19 @@ export default function BulletinsIndex({ bulletins }: Props) {
             preserveScroll: true,
             onSuccess: () => setDeleteModalOpen(false)
         });
+    };
+
+    const handleOpenAddModal = () => {
+        reset();
+        setData({
+            title: '',
+            edition: '',
+            category: 'buletin',
+            published_date: getWitaDateOnly(),
+            summary: '',
+            file_pdf: null,
+        });
+        setModalOpen(true);
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -124,7 +137,7 @@ export default function BulletinsIndex({ bulletins }: Props) {
                             />
                         </div>
                         <button
-                            onClick={() => { reset(); setModalOpen(true); }}
+                            onClick={handleOpenAddModal}
                             className="px-4 py-2 rounded-lg bg-bmkg-primary hover:bg-bmkg-dark text-white text-xs font-bold flex items-center gap-2 transition-colors flex-shrink-0 cursor-pointer"
                         >
                             <Plus className="w-4 h-4" />
@@ -271,9 +284,19 @@ export default function BulletinsIndex({ bulletins }: Props) {
                                 </div>
 
                                 <div>
-                                    <label className="block text-xs font-bold text-slate-700 mb-1">
-                                        Tanggal Resmi Diterbitkan <span className="text-red-500">*</span>
-                                    </label>
+                                    <div className="flex items-center justify-between mb-1">
+                                        <label className="block text-xs font-bold text-slate-700">
+                                            Tanggal Resmi Diterbitkan <span className="text-red-500">*</span>
+                                        </label>
+                                        <button
+                                            type="button"
+                                            onClick={() => setData('published_date', getWitaDateOnly())}
+                                            className="text-[10px] text-bmkg-primary hover:underline font-semibold"
+                                            title="Gunakan tanggal hari ini (WITA)"
+                                        >
+                                            Hari Ini (WITA)
+                                        </button>
+                                    </div>
                                     <input
                                         type="date"
                                         required

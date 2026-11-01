@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\BulletinController;
 use App\Http\Controllers\Admin\HthController;
 use App\Http\Controllers\Admin\IkmController;
+use App\Http\Controllers\Admin\LocalEarthquakeController;
 use App\Http\Controllers\Admin\PosHujanController;
 use App\Http\Controllers\Admin\PtspController;
 use App\Http\Controllers\Admin\UserController;
@@ -42,9 +43,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get('/ptsp', [PtspController::class, 'index'])->name('ptsp.index');
         Route::put('/ptsp/{ticket}/status', [PtspController::class, 'updateStatus'])->name('ptsp.update-status');
+
+        Route::get('/local-earthquakes', [LocalEarthquakeController::class, 'index'])->name('local-earthquakes.index');
+        Route::post('/local-earthquakes', [LocalEarthquakeController::class, 'store'])->name('local-earthquakes.store');
+        Route::put('/local-earthquakes/{localEarthquake}', [LocalEarthquakeController::class, 'update'])->name('local-earthquakes.update');
     });
 
     Route::middleware('role:superadmin,admin')->prefix('admin')->name('admin.')->group(function () {
+        Route::delete('/local-earthquakes/{localEarthquake}', [LocalEarthquakeController::class, 'destroy'])->name('local-earthquakes.destroy');
         Route::get('/warnings', [WarningController::class, 'index'])->name('warnings.index');
         Route::post('/warnings', [WarningController::class, 'store'])->name('warnings.store');
 

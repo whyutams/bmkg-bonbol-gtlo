@@ -68,7 +68,19 @@ class PortalController extends Controller
 
     public function gempa(): Response
     {
-        return Inertia::render('Public/Gempa');
+        $localEarthquakes = \App\Models\LocalEarthquake::published()
+            ->with(['creator', 'updater'])
+            ->latest('event_time')
+            ->paginate(10);
+
+        $latestLocal = \App\Models\LocalEarthquake::published()
+            ->latest('event_time')
+            ->first();
+
+        return Inertia::render('Public/Gempa', [
+            'dbLocalEarthquakes' => $localEarthquakes,
+            'dbLatestLocal' => $latestLocal,
+        ]);
     }
 
     public function layanan(): Response
@@ -78,37 +90,139 @@ class PortalController extends Controller
 
     public function apiGempaTerkini()
     {
-        return Cache::remember('bmkg_autogempa', 60, function () {
+        return Cache::remember('bmkg_autogempa', 30, function () {
+            // 1. Cek data gempa lokal terbaru yang memiliki M >= 5.0
+            $latestLocalMajor = \App\Models\LocalEarthquake::published()
+                ->where('magnitude', '>=', 5.0)
+                ->latest('event_time')
+                ->first();
+
+            $nationalGempa = null;
             try {
                 $response = Http::timeout(6)->withoutVerifying()->get('https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json');
                 if ($response->successful()) {
-                    return response()->json($response->json());
+                    $json = $response->json();
+                    $nationalGempa = $json['Infogempa']['gempa'] ?? null;
                 }
-                return response()->json(['error' => 'Gagal mengambil data dari server BMKG'], 502);
             } catch (\Exception $e) {
-                return response()->json([
-                    'error' => 'Koneksi ke server BMKG TEWS terputus',
-                    'message' => $e->getMessage()
-                ], 500);
+                // Biarkan $nationalGempa null jika server BMKG pusat timeout
             }
+
+            // Jika ada gempa lokal M >= 5.0, bandingkan waktu mana yang paling baru
+            if ($latestLocalMajor) {
+                $localTs = $latestLocalMajor->event_time->getTimestamp();
+                $nationalTs = 0;
+
+                if ($nationalGempa) {
+                    if (!empty($nationalGempa['DateTime'])) {
+                        $nationalTs = \Carbon\Carbon::parse($nationalGempa['DateTime'])->getTimestamp();
+                    } elseif (!empty($nationalGempa['Tanggal']) && !empty($nationalGempa['Jam'])) {
+                        $cleanJam = trim(str_replace(['WIB', 'WITA', 'WIT'], '', $nationalGempa['Jam']));
+                        $nationalTs = \Carbon\Carbon::parse($nationalGempa['Tanggal'] . ' ' . $cleanJam, 'Asia/Jakarta')->getTimestamp();
+                    }
+                }
+
+                // Jika gempa lokal M >= 5.0 lebih baru daripada gempa nasional M >= 5.0 (atau API nasional tidak tersedia)
+                if ($localTs > $nationalTs || !$nationalGempa) {
+                    $eventWita = $latestLocalMajor->event_time->copy()->setTimezone('Asia/Makassar');
+                    return response()->json([
+                        'Infogempa' => [
+                            'gempa' => [
+                                'Tanggal' => $eventWita->translatedFormat('d M Y'),
+                                'Jam' => $eventWita->format('H:i:s') . ' WITA',
+                                'DateTime' => $eventWita->toIso8601String(),
+                                'Coordinates' => "{$latestLocalMajor->latitude}, {$latestLocalMajor->longitude}",
+                                'Lintang' => $latestLocalMajor->latitude,
+                                'Bujur' => $latestLocalMajor->longitude,
+                                'Magnitude' => number_format($latestLocalMajor->magnitude, 1, '.', ''),
+                                'Kedalaman' => "{$latestLocalMajor->depth_km} km",
+                                'Wilayah' => $latestLocalMajor->epicenter_location,
+                                'Potensi' => $latestLocalMajor->tsunami_potential,
+                                'Dirasakan' => $latestLocalMajor->felt_scale_mmi ?: 'Wilayah Gorontalo & Bone Bolango',
+                                'Shakemap' => $latestLocalMajor->shakemap_image,
+                                'is_local' => true,
+                                'source_label' => 'Staklim BMKG Bone Bolango',
+                            ]
+                        ]
+                    ]);
+                }
+            }
+
+            // Jika gempa nasional lebih baru atau tidak ada gempa lokal M >= 5.0
+            if ($nationalGempa) {
+                $nationalGempa['is_local'] = false;
+                $nationalGempa['source_label'] = 'Pusat Gempabumi BMKG (InaTEWS)';
+                return response()->json([
+                    'Infogempa' => [
+                        'gempa' => $nationalGempa
+                    ]
+                ]);
+            }
+
+            return response()->json(['error' => 'Data gempa terkini tidak tersedia'], 502);
         });
     }
 
     public function apiGempaKatalog()
     {
-        return Cache::remember('bmkg_katalog_gempa', 60, function () {
+        return Cache::remember('bmkg_katalog_gempa', 30, function () {
+            $nationalList = [];
             try {
                 $response = Http::timeout(6)->withoutVerifying()->get('https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.json');
                 if ($response->successful()) {
-                    return response()->json($response->json());
+                    $json = $response->json();
+                    $nationalList = $json['Infogempa']['gempa'] ?? [];
                 }
-                return response()->json(['error' => 'Gagal mengambil katalog gempa dari server BMKG'], 502);
             } catch (\Exception $e) {
-                return response()->json([
-                    'error' => 'Koneksi ke server BMKG TEWS terputus',
-                    'message' => $e->getMessage()
-                ], 500);
+                // Biarkan list nasional kosong jika timeout
             }
+
+            // Ambil data gempa lokal M >= 5.0
+            $localMajor = \App\Models\LocalEarthquake::published()
+                ->where('magnitude', '>=', 5.0)
+                ->latest('event_time')
+                ->take(10)
+                ->get();
+
+            $formattedLocal = [];
+            foreach ($localMajor as $leq) {
+                $eventWita = $leq->event_time->copy()->setTimezone('Asia/Makassar');
+                $formattedLocal[] = [
+                    'Tanggal' => $eventWita->translatedFormat('d M Y'),
+                    'Jam' => $eventWita->format('H:i:s') . ' WITA',
+                    'DateTime' => $eventWita->toIso8601String(),
+                    'Coordinates' => "{$leq->latitude}, {$leq->longitude}",
+                    'Lintang' => $leq->latitude,
+                    'Bujur' => $leq->longitude,
+                    'Magnitude' => number_format($leq->magnitude, 1, '.', ''),
+                    'Kedalaman' => "{$leq->depth_km} km",
+                    'Wilayah' => $leq->epicenter_location,
+                    'Potensi' => $leq->tsunami_potential,
+                    'Dirasakan' => $leq->felt_scale_mmi ?: '-',
+                    'Shakemap' => $leq->shakemap_image,
+                    'is_local' => true,
+                    'source_label' => 'Lokal Staklim Bone Bolango',
+                ];
+            }
+
+            // Gabungkan data lokal dan nasional, urutkan berdasarkan waktu kejadian terbaru
+            $merged = array_merge($formattedLocal, array_map(function ($item) {
+                $item['is_local'] = false;
+                $item['source_label'] = 'BMKG Pusat (InaTEWS)';
+                return $item;
+            }, $nationalList));
+
+            usort($merged, function ($a, $b) {
+                $timeA = isset($a['DateTime']) ? strtotime($a['DateTime']) : 0;
+                $timeB = isset($b['DateTime']) ? strtotime($b['DateTime']) : 0;
+                return $timeB <=> $timeA;
+            });
+
+            return response()->json([
+                'Infogempa' => [
+                    'gempa' => array_slice($merged, 0, 15)
+                ]
+            ]);
         });
     }
 
@@ -159,6 +273,23 @@ class PortalController extends Controller
         return response(base64_decode($cached['data']))
             ->header('Content-Type', $cached['type'])
             ->header('Cache-Control', 'public, max-age=3600');
+    }
+
+    public function apiGempaLokal()
+    {
+        return Cache::remember('bmkg_gempa_lokal_list', 30, function () {
+            $earthquakes = \App\Models\LocalEarthquake::published()
+                ->latest('event_time')
+                ->take(20)
+                ->get();
+
+            return response()->json([
+                'status' => 'success',
+                'source' => 'Stasiun Klimatologi BMKG Bone Bolango',
+                'total' => $earthquakes->count(),
+                'data' => $earthquakes,
+            ]);
+        });
     }
 
     public function submitPtsp(Request $request): \Illuminate\Http\RedirectResponse

@@ -7,6 +7,7 @@ use App\Models\Bulletin;
 use App\Models\EarlyWarning;
 use App\Models\HthData;
 use App\Models\IkmSurvey;
+use App\Models\LocalEarthquake;
 use App\Models\PosHujan;
 use App\Models\PtspTicket;
 use App\Models\User;
@@ -271,6 +272,71 @@ class DatabaseSeeder extends Seeder
                     'q9_pengaduan' => 4,
                     'ip_address' => '127.0.0.1',
                 ])
+            );
+        }
+
+        $localEarthquakes = [
+            [
+                'event_time' => '2026-10-28 14:35:10',
+                'magnitude' => 3.6,
+                'depth_km' => 10,
+                'latitude' => '0.52 LU',
+                'longitude' => '123.18 BT',
+                'epicenter_location' => 'Pusat gempa di darat 12 km Tenggara Suwawa, Kab. Bone Bolango',
+                'felt_scale_mmi' => 'II - III MMI di Suwawa, II MMI di Kabila & Kota Gorontalo',
+                'tsunami_potential' => 'Tidak Berpotensi TSUNAMI',
+                'notes' => 'Gempa tektonik dangkal terpicu oleh deformasi segmen lokal sistem Sesar Gorontalo.',
+                'is_published' => true,
+                'created_by' => $admin->id,
+            ],
+            [
+                'event_time' => '2026-10-22 09:12:45',
+                'magnitude' => 4.1,
+                'depth_km' => 24,
+                'latitude' => '0.32 LS',
+                'longitude' => '123.25 BT',
+                'epicenter_location' => 'Pusat gempa di laut Teluk Tomini 38 km Selatan Bonepantai, Bone Bolango',
+                'felt_scale_mmi' => 'II - III MMI di Pesisir Bonepantai, II MMI di Botupingge',
+                'tsunami_potential' => 'Tidak Berpotensi TSUNAMI',
+                'notes' => 'Aktivitas sesar aktif di Teluk Tomini perairan selatan Gorontalo.',
+                'is_published' => true,
+                'created_by' => $admin->id,
+            ],
+            [
+                'event_time' => '2026-10-15 21:04:18',
+                'magnitude' => 2.9,
+                'depth_km' => 8,
+                'latitude' => '0.61 LU',
+                'longitude' => '123.10 BT',
+                'epicenter_location' => 'Pusat gempa di darat 7 km Timur Laut Tapa, Kab. Bone Bolango',
+                'felt_scale_mmi' => 'II MMI di Tapa dan Bulango Ulu',
+                'tsunami_potential' => 'Tidak Berpotensi TSUNAMI',
+                'notes' => 'Aktivitas seismik mikro daratan sesar aktif Bone Bolango.',
+                'is_published' => true,
+                'created_by' => $superadmin->id,
+            ],
+            [
+                'event_time' => '2026-10-06 05:48:30',
+                'magnitude' => 3.2,
+                'depth_km' => 15,
+                'latitude' => '0.40 LU',
+                'longitude' => '123.42 BT',
+                'epicenter_location' => 'Pusat gempa di darat 18 km Timur Pinogu, Kab. Bone Bolango',
+                'felt_scale_mmi' => 'II MMI di Pinogu dan Suwawa Timur',
+                'tsunami_potential' => 'Tidak Berpotensi TSUNAMI',
+                'notes' => 'Sesar naik dangkal zona perbukitan Taman Nasional Bogani Nani Wartabone.',
+                'is_published' => true,
+                'created_by' => $admin->id,
+            ]
+        ];
+
+        foreach ($localEarthquakes as $leq) {
+            LocalEarthquake::firstOrCreate(
+                [
+                    'event_time' => $leq['event_time'],
+                    'epicenter_location' => $leq['epicenter_location']
+                ],
+                $leq
             );
         }
 

@@ -40,7 +40,7 @@ class WarningController extends Controller
             'title' => $validated['title'],
             'description' => $validated['description'],
             'affected_areas' => $validated['affected_areas'] ?? ['Kabupaten Bone Bolango'],
-            'issued_at' => date('d F Y') . ' ' . date('H:i') . ' WITA',
+            'issued_at' => \Carbon\Carbon::now('Asia/Makassar')->translatedFormat('d F Y') . ' ' . \Carbon\Carbon::now('Asia/Makassar')->format('H:i') . ' WITA',
             'valid_until' => $validated['valid_until'],
             'is_active' => true,
             'updated_by' => auth()->id(),

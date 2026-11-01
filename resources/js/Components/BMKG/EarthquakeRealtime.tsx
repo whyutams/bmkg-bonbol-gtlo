@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Activity, Clock, Compass, Layers, AlertTriangle, ShieldCheck, RefreshCw, Maximize2, X } from 'lucide-react';
 import { EarthquakeData, AutogempaResponse } from '@/types/bmkg';
+import { convertWibToWita } from '@/Utils/formatters';
 
 interface EarthquakeRealtimeProps {
     initialData?: EarthquakeData;
@@ -39,7 +40,7 @@ export default function EarthquakeRealtime({ initialData, compact = false }: Ear
             if (!earthquake) {
                 setEarthquake({
                     Tanggal: '19 Sep 2026',
-                    Jam: '14:22:10 WIB',
+                    Jam: '15:22:10 WITA',
                     Coordinates: '0.45 LS, 123.15 BT',
                     Lintang: '0.45 LS',
                     Bujur: '123.15 BT',
@@ -67,8 +68,9 @@ export default function EarthquakeRealtime({ initialData, compact = false }: Ear
         return () => clearInterval(interval);
     }, []);
 
+    const isLocal = Boolean((earthquake as any)?.is_local);
     const shakemapUrl = earthquake?.Shakemap 
-        ? `/api/bmkg/shakemap/${earthquake.Shakemap}`
+        ? (isLocal ? `/storage/${earthquake.Shakemap}` : `/api/bmkg/shakemap/${earthquake.Shakemap}`)
         : '';
 
     const magnitudeNumber = parseFloat(earthquake?.Magnitude || '0');
@@ -85,13 +87,17 @@ export default function EarthquakeRealtime({ initialData, compact = false }: Ear
                     </h2>
                 </div>
                 <div className="flex items-center gap-2">
-                    <span className="text-[10px] text-slate-400 hidden sm:inline">
-                        Sumber: BMKG TEWS
+                    <span className={`text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider ${
+                        isLocal 
+                            ? 'bg-blue-600 text-white border border-blue-400' 
+                            : 'bg-slate-800 text-slate-300 border border-slate-700'
+                    }`}>
+                        {(earthquake as any)?.source_label || (isLocal ? 'Lokal Bone Bolango' : 'BMKG TEWS')}
                     </span>
                     <button
                         onClick={fetchEarthquake}
                         disabled={loading}
-                        className="p-1 rounded hover:bg-white/10 text-white/80 hover:text-white transition-colors"
+                        className="p-1 rounded hover:bg-white/10 text-white/80 hover:text-white transition-colors cursor-pointer"
                         title="Perbarui Data Gempa"
                     >
                         <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
@@ -147,7 +153,10 @@ export default function EarthquakeRealtime({ initialData, compact = false }: Ear
                                 <Clock className="w-4 h-4 text-slate-400 flex-shrink-0" />
                                 <div>
                                     <span className="block text-[10px] text-gray-500 uppercase">Waktu Gempa</span>
-                                    <strong className="font-mono text-gray-800">{earthquake.Tanggal} - {earthquake.Jam}</strong>
+                                    {(() => {
+                                        const witaInfo = convertWibToWita(earthquake.Jam, earthquake.DateTime, earthquake.Tanggal);
+                                        return <strong className="font-mono text-gray-800">{witaInfo.tanggal} - {witaInfo.jam}</strong>;
+                                    })()}
                                 </div>
                             </div>
 
@@ -219,7 +228,7 @@ export default function EarthquakeRealtime({ initialData, compact = false }: Ear
 
                 
                 <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-500">
-                    <span>Live TEWS BMKG</span>
+                    <span>{isLocal ? 'Rilis Staklim Bone Bolango' : 'Live TEWS BMKG'}</span>
                     <span className="font-mono">Pembaruan: {lastFetched || 'Real-time'}</span>
                 </div>
             </div>

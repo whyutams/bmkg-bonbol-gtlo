@@ -6,6 +6,7 @@ import {
     CloudRain, 
     FileText, 
     MapPin, 
+    Activity,
     FileCheck, 
     Smile, 
     Users, 
@@ -115,6 +116,7 @@ export default function AuthenticatedLayout({
                     { title: 'Peringatan Dini EWS', href: '/admin/warnings', icon: AlertTriangle, current: route().current('admin.warnings.*') },
                 ] : []),
                 { title: 'Monitoring HTH Dasarian', href: '/admin/hth', icon: CloudRain, current: route().current('admin.hth.*') },
+                { title: 'Data Gempa Lokal', href: '/admin/local-earthquakes', icon: Activity, current: route().current('admin.local-earthquakes.*') },
                 { title: 'Buletin & Publikasi PDF', href: '/admin/bulletins', icon: FileText, current: route().current('admin.bulletins.*') },
                 { title: 'Jaringan Pos Hujan GIS', href: '/admin/pos-hujan', icon: MapPin, current: route().current('admin.pos-hujan.*') },
             ]

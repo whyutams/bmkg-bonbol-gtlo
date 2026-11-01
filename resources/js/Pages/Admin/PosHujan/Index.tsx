@@ -3,6 +3,7 @@ import { Head, useForm, router } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { MapPin, Plus, Trash2, Edit2, CheckCircle2, AlertTriangle, XCircle, Search } from 'lucide-react';
 import Pagination, { PaginationLink } from '@/Components/Pagination';
+import { formatWaktuIndo } from '@/Utils/formatters';
 
 interface PosStation {
     id: number;
@@ -50,22 +51,7 @@ interface PosHujanFormData {
     pic_phone: string;
 }
 
-const formatWaktuIndo = (dateStr?: string) => {
-    if (!dateStr) return '-';
-    try {
-        const d = new Date(dateStr);
-        if (isNaN(d.getTime())) return dateStr;
-        return d.toLocaleDateString('id-ID', {
-            day: 'numeric',
-            month: 'short',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    } catch {
-        return dateStr;
-    }
-};
+
 
 export default function PosHujanIndex({ stations }: PosHujanProps) {
     const [modalOpen, setModalOpen] = useState(false);
